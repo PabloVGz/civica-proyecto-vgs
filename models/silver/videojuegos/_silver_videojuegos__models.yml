@@ -1,0 +1,264 @@
+version: 2
+
+models:
+  - name: slv_videojuegos__macrogeneros
+    description: Catálogo de macrogéneros que agrupan los géneros individuales de videojuegos.
+    columns:
+      - name: macrogenre_id
+        description: Clave del macrogénero.
+        data_tests: [unique, not_null]
+      - name: macrogenre_name
+        description: Nombre normalizado del macrogénero (ej. Action, Sports, Role-Playing).
+
+  - name: slv_videojuegos__generos
+    description: Catálogo de géneros de videojuegos vinculados a su macrogénero superior.
+    columns:
+      - name: genre_id
+        description: Clave del género.
+        data_tests: [unique, not_null]
+      - name: genre_name
+        description: Nombre del género del videojuego.
+      - name: macrogenre_id
+        description: Clave foránea hacia slv_videojuegos__macrogeneros.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con macrogenero
+              arguments:
+                to: ref('slv_videojuegos__macrogeneros')
+                field: macrogenre_id
+
+  - name: slv_videojuegos__publishers
+    description: Dimensión de editoras (publishers) responsables de la distribución comercial.
+    columns:
+      - name: publisher_id
+        description: Clave del publisher.
+        data_tests: [unique, not_null]
+      - name: publisher_name
+        description: Nombre de la compañía editora.
+
+  - name: slv_videojuegos__developers
+    description: Dimensión de estudios desarrolladores.
+    columns:
+      - name: developer_id
+        description: Clave del estudio desarrollador.
+        data_tests: [unique, not_null]
+      - name: developer_name
+        description: Nombre del estudio creador del juego (valor 'Unknown' cuando no consta en origen).
+
+  - name: slv_videojuegos__ratings
+    description: Catálogo de clasificaciones por edad ESRB.
+    columns:
+      - name: rating_id
+        description: Clave del código de clasificación.
+        data_tests: [unique, not_null]
+      - name: rating_code
+        description: '{{ doc("rating_code") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['E', 'E10+', 'T', 'M', 'AO', 'RP', 'EC', 'K-A', 'Unrated'] #El rating debe ser uno de los oficiales dados por ESRB no por ejemplo '18+'
+      - name: rating_description
+        description: Descripción completa del rango de edad correspondiente al código ESRB.
+        data_tests: [not_null]
+
+  - name: slv_videojuegos__plataformas
+    description: Dimensión de consolas y sistemas de juego con fabricante y tipo de dispositivo.
+    columns:
+      - name: platform_id
+        description: Clave de la plataforma.
+        data_tests: [unique, not_null]
+      - name: platform_code
+        description: Código abreviado de la plataforma (ej. PS4, XOne, PC, Wii).
+      - name: platform_name
+        description: Nombre comercial completo de la plataforma.
+      - name: manufacturer
+        description: Fabricante del hardware (Sony, Microsoft, Nintendo, PC, etc.).
+      - name: platform_type
+        description: '{{ doc("platform_type") }}'
+
+  - name: slv_videojuegos__regiones
+    description: Catálogo de regiones geográficas de venta.
+    columns:
+      - name: region_id
+        description: Clave de la región.
+        data_tests: [unique, not_null]
+      - name: region_code
+        description: '{{ doc("region_code") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['NA', 'EU', 'JP', 'OTHER'] #Añado este test para confirmar que pertenece a una de las regiones existentes,por ejemplo SA (South America) no debe pasarlo
+      - name: region_name
+        description: Nombre completo de la región comercial.
+
+  - name: slv_videojuegos__videojuegos
+    description: Entidad de títulos de videojuegos deduplicados entre todas las fuentes.
+    columns:
+      - name: game_id
+        description: Clave del título del videojuego.
+        data_tests: [unique, not_null]
+      - name: genre_id
+        description: Clave foránea hacia slv_videojuegos__generos.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_videojuegos__generos') #Integridad referencial con genero
+                field: genre_id
+      - name: game_name
+        description: Título limpio y normalizado del videojuego.
+
+  - name: slv_videojuegos__ediciones
+    description: Tabla central de ediciones
+    columns:
+      - name: edicion_id
+        description: '{{ doc("edicion_id") }}'
+        data_tests: [unique, not_null]
+      - name: game_id
+        description: Clave foránea hacia slv_videojuegos__videojuegos.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con juego
+              arguments:
+                to: ref('slv_videojuegos__videojuegos')
+                field: game_id
+      - name: platform_id
+        description: Clave foránea hacia slv_videojuegos__plataformas.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con plataforma
+              arguments:
+                to: ref('slv_videojuegos__plataformas')
+                field: platform_id
+      - name: publisher_id
+        description: Clave foránea hacia slv_videojuegos__publishers.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con publisher
+              arguments:
+                to: ref('slv_videojuegos__publishers')
+                field: publisher_id
+      - name: developer_id
+        description: Clave foránea hacia slv_videojuegos__developers.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con developer
+              arguments:
+                to: ref('slv_videojuegos__developers')
+                field: developer_id
+      - name: rating_id
+        description: Clave foránea hacia slv_videojuegos__ratings.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con rating
+              arguments:
+                to: ref('slv_videojuegos__ratings')
+                field: rating_id
+      #Las siguientes 3 columnas prueban el test genérico in range
+      - name: release_year
+        description: Año de lanzamiento comercial de la edición.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1970
+                max_value: 2026
+                inclusive: true
+      - name: critic_score
+        description: '{{ doc("critic_score") }}'
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                inclusive: true
+      - name: user_score
+        description: '{{ doc("user_score") }}'
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 10
+                inclusive: true
+      - name: critic_count
+        description: Número total de reseñas de crítica especializada contabilizadas.
+        data_tests:
+          - min_value:
+              arguments:
+                value: 0
+      - name: user_count
+        description: Número total de valoraciones de usuarios contabilizadas.
+        data_tests:
+          - min_value:
+              arguments:
+                value: 0
+
+  - name: slv_videojuegos__ventas_regionales
+    description: Tabla incremental con las ventas y su edición, región y fuente de origen.
+    columns:
+      - name: sale_id
+        description: '{{ doc("sale_id") }}'
+        data_tests: [unique, not_null]
+      - name: edicion_id
+        description: '{{ doc("edicion_id") }}'
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con edicion
+              arguments:
+                to: ref('slv_videojuegos__ediciones')
+                field: edicion_id
+      - name: region_id
+        description: Clave foránea hacia slv_videojuegos__regiones.
+        data_tests:
+          - not_null
+          - relationships: #Integridad referencial con region
+              arguments:
+                to: ref('slv_videojuegos__regiones')
+                field: region_id
+      - name: source_code
+        description: '{{ doc("source_code") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['VGS_2016', 'PS4', 'XBOX'] # Este test lo añado para confirmar que viene de una de las fuentes dadas.
+      - name: sales_millions
+        description: '{{ doc("sales_millions") }}'
+        data_tests:
+          - not_null
+          - min_value:
+              arguments:
+                value: 0 #debe vender algo
+      - name: _loaded_at
+        description: Marca de tiempo UTC de carga.
+        data_tests:
+          - not_null
+          - not_future_timestamp
+
+
+unit_tests:
+  - name: test_slv_ediciones_deduplica_y_combina_fuentes #Se verifica que se fusionan las fuentes bien, en este caso en VGS no tiene fecha de salida y en PS4 sí (Xbox se mete vacio para que no falle)
+    model: slv_videojuegos__ediciones
+    given:
+      - input: ref('stg_raw_videojuegos__vgs_2016')
+        rows:
+          - {game_name: 'The Witcher 3', platform: 'PS4', publisher: 'Namco', developer: 'CD Projekt', rating: 'M', release_year: null, critic_score: 92, critic_count: 79, user_score: 9.2, user_count: 1000}
+      - input: ref('stg_raw_videojuegos__ps4')
+        rows:
+          - {game_name: 'The Witcher 3', platform: 'PS4', publisher: 'Namco', release_year: 2015}
+      - input: ref('stg_raw_videojuegos__xbox')
+        rows: []
+    expect:
+      rows:
+        - {release_year: 2015, critic_score: 92, user_score: 9.2}
+
+  - name: test_slv_ratings_mapea_descripciones #Se comprueba que al meter dos ratings se le de bien el codigo y la descripción
+    model: slv_videojuegos__ratings
+    given:
+      - input: ref('stg_raw_videojuegos__vgs_2016')
+        rows:
+          - {rating: 'M'}
+          - {rating: null}
+    expect:
+      rows:
+        - {rating_code: 'M', rating_description: 'Mature (Ages 17 and Older)'}
+        - {rating_code: 'Unrated', rating_description: 'Unrated / Not Specified'}

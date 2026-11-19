@@ -1,0 +1,38 @@
+version: 2
+
+seeds:
+  - name: seed_regiones
+    description: "Catálogo de regiones geográficas de ventas."
+    config:
+      column_types:
+        region_code: varchar
+        region_name: varchar
+    columns:
+      - name: region_code
+        description: "Código corto de la región (NA, EU, JP, OTHER)."
+        data_tests:
+          - unique
+          - not_null
+      - name: region_name
+        description: "Nombre completo de la región." 
+
+  - name: seed_plataformas
+    description: "Catálogo de plataformas de videojuegos, fabricante y formato."
+    config:
+      column_types:
+        platform_code: varchar
+        platform_name: varchar
+        manufacturer: varchar
+        platform_type: varchar
+    columns:
+      - name: platform_code
+        description: "Código abreviado de la plataforma tal como aparece en los ficheros fuente."
+        data_tests:
+          - unique
+          - not_null
+      - name: platform_name
+        description: "Nombre comercial completo de la plataforma."
+      - name: manufacturer
+        description: "Empresa fabricante o ecosistema (Sony, Microsoft, Nintendo, Sega, PC, etc.)."
+      - name: platform_type
+        description: "Tipo de dispositivo (Sobremesa, Portátil o PC)."

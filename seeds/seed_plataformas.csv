@@ -1,0 +1,32 @@
+platform_code,platform_name,manufacturer,platform_type
+PS4,PlayStation 4,Sony,Home Console
+PS3,PlayStation 3,Sony,Home Console
+PS2,PlayStation 2,Sony,Home Console
+PS,PlayStation,Sony,Home Console
+PSP,PlayStation Portable,Sony,Handheld
+PSV,PlayStation Vita,Sony,Handheld
+XOne,Xbox One,Microsoft,Home Console
+X360,Xbox 360,Microsoft,Home Console
+XB,Xbox,Microsoft,Home Console
+Wii,Nintendo Wii,Nintendo,Home Console
+WiiU,Nintendo Wii U,Nintendo,Home Console
+NES,Nintendo Entertainment System,Nintendo,Home Console
+SNES,Super Nintendo Entertainment System,Nintendo,Home Console
+N64,Nintendo 64,Nintendo,Home Console
+GC,Nintendo GameCube,Nintendo,Home Console
+DS,Nintendo DS,Nintendo,Handheld
+3DS,Nintendo 3DS,Nintendo,Handheld
+GB,Game Boy,Nintendo,Handheld
+GBA,Game Boy Advance,Nintendo,Handheld
+PC,PC,PC,PC
+2600,Atari 2600,Atari,Home Console
+GEN,Sega Genesis,Sega,Home Console
+DC,Dreamcast,Sega,Home Console
+SAT,Sega Saturn,Sega,Home Console
+SCD,Sega CD,Sega,Home Console
+GG,Game Gear,Sega,Handheld
+NG,Neo Geo,SNK,Home Console
+WS,WonderSwan,Bandai,Handheld
+TG16,TurboGrafx-16,NEC,Home Console
+3DO,3DO Interactive Multiplayer,The 3DO Company,Home Console
+PCFX,PC-FX,NEC,Home Console

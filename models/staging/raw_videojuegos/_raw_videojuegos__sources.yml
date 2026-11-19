@@ -1,0 +1,156 @@
+version: 2
+
+sources:
+  - name: raw_videojuegos
+    database: "{{ env_var('DBT_BRONZE_DATABASE', 'DEV_BRONZE_DB') }}" #Si a env var le metes dos argumentos el segundo actúa como fall back
+    schema: raw_videojuegos
+    config:
+      loaded_at_field: _loaded_at
+      freshness:
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    tables:
+      - name: raw_vgs_2016
+        description: "Histórico global de ventas y puntuaciones de videojuegos hasta diciembre de 2016."
+        columns:
+          - name: name
+            data_type: varchar
+            description: "Título del videojuego."
+
+          - name: platform
+            data_type: varchar
+            description: "Plataforma o consola de lanzamiento."
+            data_tests:
+              - not_null #También quiero que sea no nulo
+          - name: year_of_release
+            data_type: varchar
+            description: "Año de lanzamiento en crudo."
+          - name: genre
+            data_type: varchar
+            description: "Género del videojuego."
+          - name: publisher
+            data_type: varchar
+            description: "Editora/distribuidora."
+          - name: na_sales
+            data_type: varchar
+            description: "Ventas en Norteamérica (millones de unidades)."
+          - name: eu_sales
+            data_type: varchar
+            description: "Ventas en Europa (millones de unidades)."
+          - name: jp_sales
+            data_type: varchar
+            description: "Ventas en Japón (millones de unidades)."
+          - name: other_sales
+            data_type: varchar
+            description: "Ventas en el resto del mundo (millones de unidades)."
+          - name: global_sales
+            data_type: varchar
+            description: "Ventas globales totales (millones de unidades)."
+          - name: critic_score
+            data_type: varchar
+            description: "Puntuación media de la crítica especializada (Metacritic, 0-100)."
+          - name: critic_count
+            data_type: varchar
+            description: "Número de reseñas de crítica consideradas."
+          - name: user_score
+            data_type: varchar
+            description: "Puntuación media de los usuarios (0-10 o 'tbd')."
+          - name: user_count
+            data_type: varchar
+            description: "Número de valoraciones de usuarios."
+          - name: developer
+            data_type: varchar
+            description: "Estudio desarrollador."
+          - name: rating
+            data_type: varchar
+            description: "Clasificación por edades (ESRB)."
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['E', 'E10+', 'T', 'M', 'AO', 'RP', 'EC', 'K-A','Unrated'] #Este test también lo he puesto en Silver, quiero asegurarme que las clasificaciones son las que deben ser
+          - name: _loaded_at
+            data_type: timestamp_ltz
+            description: "Marca temporal de carga en la capa Bronze."
+            data_tests:
+              - not_null #Importante para la incrementalidad
+
+      - name: raw_ps4
+        description: "Ventas globales de videojuegos de PlayStation 4 (corte 2020)."
+        columns:
+          - name: game
+            data_type: varchar
+            description: "Título del videojuego."
+            data_tests:
+              - not_null #Igual que en VGS
+          - name: year
+            data_type: varchar
+            description: "Año de lanzamiento en crudo."
+          - name: genre
+            data_type: varchar
+            description: "Género del videojuego."
+          - name: publisher
+            data_type: varchar
+            description: "Editora/distribuidora."
+          - name: north_america
+            data_type: varchar
+            description: "Ventas en Norteamérica (millones de unidades)."
+          - name: europe
+            data_type: varchar
+            description: "Ventas en Europa (millones de unidades)."
+          - name: japan
+            data_type: varchar
+            description: "Ventas en Japón (millones de unidades)."
+          - name: rest_of_world
+            data_type: varchar
+            description: "Ventas en el resto del mundo (millones de unidades)."
+          - name: global
+            data_type: varchar
+            description: "Ventas globales totales (millones de unidades)."
+          - name: _loaded_at
+            data_type: timestamp_ltz
+            description: "Marca temporal de carga en la capa Bronze."
+            data_tests:
+              - not_null #Importante para la incrementalidad
+
+      - name: raw_xbox
+        description: "Ventas globales de videojuegos de Xbox One (corte 2020)."
+        columns:
+          - name: pos
+            data_type: varchar
+            description: "Posición en el ranking de ventas del fichero original."
+            data_tests:
+              - not_null #Simple verificación
+          - name: game
+            data_type: varchar
+            description: "Título del videojuego."
+            data_tests:
+              - not_null #Igualque en los anteriores
+          - name: year
+            data_type: varchar
+            description: "Año de lanzamiento en crudo."
+          - name: genre
+            data_type: varchar
+            description: "Género del videojuego."
+          - name: publisher
+            data_type: varchar
+            description: "Editora/distribuidora."
+          - name: north_america
+            data_type: varchar
+            description: "Ventas en Norteamérica (millones de unidades)."
+          - name: europe
+            data_type: varchar
+            description: "Ventas en Europa (millones de unidades)."
+          - name: japan
+            data_type: varchar
+            description: "Ventas en Japón (millones de unidades)."
+          - name: rest_of_world
+            data_type: varchar
+            description: "Ventas en el resto del mundo (millones de unidades)."
+          - name: global
+            data_type: varchar
+            description: "Ventas globales totales (millones de unidades)."
+          - name: _loaded_at
+            data_type: timestamp_ltz
+            description: "Marca temporal de carga en la capa Bronze."
+            data_tests:
+              - not_null #Importante para la incrementalidad

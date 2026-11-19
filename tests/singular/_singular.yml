@@ -1,0 +1,10 @@
+data_tests:
+- name: assert_ediciones con ventas
+  description: Edición sin registro de ventas
+  config:
+    severity: warn
+
+- name: assert_puntuaciones_con_conteo
+  description: Puntuación sin reseñas
+  config:
+    severity: warn

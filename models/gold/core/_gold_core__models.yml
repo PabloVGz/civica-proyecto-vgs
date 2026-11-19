@@ -1,0 +1,163 @@
+version: 2
+
+models:
+  - name: dim_ediciones
+    description: Dimensión de ediciones de videojuegos con año, década, clasificación ESRB, disponibilidad multiplataforma y notas de Metacritic.
+    columns:
+      - name: edicion_id
+        description: '{{ doc("edicion_id") }}'
+        data_tests: [unique, not_null]
+      - name: game_name
+        description: Título comercial normalizado del videojuego.
+      - name: release_year
+        description: Año de lanzamiento comercial de la edición.
+      - name: decada_lanzamiento
+        description: '{{ doc("decada_lanzamiento") }}'
+      - name: rating_code
+        description: '{{ doc("rating_code") }}'
+      - name: rating_description
+        description: Descripción completa del rango de edad correspondiente al código ESRB.
+      - name: es_multiplataforma
+        description: '{{ doc("es_multiplataforma") }}'
+      - name: total_plataformas
+        description: '{{ doc("total_plataformas") }}'
+      - name: critic_score
+        description: '{{ doc("critic_score") }}'
+      - name: critic_count
+        description: Número total de reseñas de crítica especializada contabilizadas.
+      - name: user_score
+        description: '{{ doc("user_score") }}'
+      - name: user_count
+        description: Número total de valoraciones de usuarios contabilizadas.
+
+  - name: dim_plataformas
+    description: Dimensión analítica de consolas y sistemas de juego con fabricante y tipo de hardware.
+    columns:
+      - name: platform_id
+        description: Clave de la plataforma.
+        data_tests: [unique, not_null]
+      - name: platform_code
+        description: Código abreviado de la plataforma (ej. PS4, XOne, PC, Wii).
+      - name: platform_name
+        description: Nombre comercial completo de la plataforma.
+      - name: manufacturer
+        description: Fabricante del hardware (Sony, Microsoft, Nintendo, PC, etc.).
+      - name: platform_type
+        description: '{{ doc("platform_type") }}'
+
+  - name: dim_generos
+    description: Dimensión analítica de géneros de videojuegos con su agrupación de macrogénero.
+    columns:
+      - name: genre_id
+        description: Clave del género.
+        data_tests: [unique, not_null]
+      - name: genre_name
+        description: Nombre limpio del género del videojuego.
+      - name: macrogenre_name
+        description: Agrupación de alto nivel del género.
+
+  - name: dim_publishers
+    description: Dimensión compañías editoras responsables de la distribución comercial.
+    columns:
+      - name: publisher_id
+        description: Clave del publisher.
+        data_tests: [unique, not_null]
+      - name: publisher_name
+        description: Nombre estandarizado de la compañía editora.
+
+  - name: dim_developers
+    description: Dimensión de estudios desarrolladores de videojuegos.
+    columns:
+      - name: developer_id
+        description: Clave del estudio desarrollador.
+        data_tests: [unique, not_null]
+      - name: developer_name
+        description: Nombre del estudio creador del juego.
+
+  - name: dim_regiones
+    description: Dimensión de regiones geográficas donde se registran las ventas.
+    columns:
+      - name: region_id
+        description: Clave de la región.
+        data_tests: [unique, not_null]
+      - name: region_code
+        description: '{{ doc("region_code") }}'
+      - name: region_name
+        description: Nombre completo de la región comercial.
+
+  - name: fct_ventas
+    description: Tabla de hechos principal de ventas regionales de videojuegos.
+    columns:
+      - name: sale_id
+        description: '{{ doc("sale_id") }}'
+        data_tests:
+          - unique:
+              config:
+                store_failures: true
+          - not_null
+      - name: edicion_id
+        description: '{{ doc("edicion_id") }}'
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_ediciones')
+                field: edicion_id
+              config:
+                store_failures: true
+      - name: platform_id
+        description: Clave foránea hacia dim_plataformas.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_plataformas')
+                field: platform_id
+              config:
+                store_failures: true
+      - name: genre_id
+        description: Clave foránea hacia dim_generos.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_generos')
+                field: genre_id
+              config:
+                store_failures: true
+      - name: publisher_id
+        description: Clave foránea hacia dim_publishers.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_publishers')
+                field: publisher_id
+              config:
+                store_failures: true
+      - name: developer_id
+        description: Clave foránea hacia dim_developers.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_developers')
+                field: developer_id
+              config:
+                store_failures: true
+      - name: region_id
+        description: Clave foránea hacia dim_regiones.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_regiones')
+                field: region_id
+              config:
+                store_failures: true
+      - name: source_code
+        description: '{{ doc("source_code") }}'
+      - name: sales_millions
+        description: '{{ doc("sales_millions") }}'
+      - name: cuota_regional_pct
+        description: '{{ doc("cuota_regional_pct") }}'

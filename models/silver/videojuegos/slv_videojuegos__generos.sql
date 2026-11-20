@@ -1,10 +1,11 @@
+{% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}
+
 with all_genres as (
 
-    select genre from {{ ref('stg_raw_videojuegos__vgs_2016') }}
-    union
-    select genre from {{ ref('stg_raw_videojuegos__ps4') }}
-    union
-    select genre from {{ ref('stg_raw_videojuegos__xbox') }}
+    {% for fuente in fuentes %}
+    select genre from {{ ref('stg_raw_videojuegos__' ~ fuente) }}
+    {% if not loop.last %}union{% endif %}
+    {% endfor %}
 
 ),
 

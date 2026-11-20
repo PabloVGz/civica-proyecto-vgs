@@ -1,26 +1,15 @@
+{% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}
+{#Con un bucle queda bastante más limpio#}
 with unioned as (
 
+    {% for fuente in fuentes %}
     select
         game_name,
         genre,
-        1 as source_priority
-    from {{ ref('stg_raw_videojuegos__vgs_2016') }}
-
-    union all
-
-    select
-        game_name,
-        genre,
-        2 as source_priority
-    from {{ ref('stg_raw_videojuegos__ps4') }}
-
-    union all
-
-    select
-        game_name,
-        genre,
-        3 as source_priority
-    from {{ ref('stg_raw_videojuegos__xbox') }}
+        {{ loop.index }} as source_priority
+    from {{ ref('stg_raw_videojuegos__' ~ fuente) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 
 ),
 

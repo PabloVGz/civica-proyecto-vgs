@@ -1,10 +1,12 @@
+{% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}
+{#Se unen los publishers de los raw usando un bucle#}
+
 with all_publishers as (
---uno los publishers de los raw
-    select publisher from {{ ref('stg_raw_videojuegos__vgs_2016') }}
-    union
-    select publisher from {{ ref('stg_raw_videojuegos__ps4') }}
-    union
-    select publisher from {{ ref('stg_raw_videojuegos__xbox') }}
+
+    {% for fuente in fuentes %}
+    select publisher from {{ ref('stg_raw_videojuegos__' ~ fuente) }}
+    {% if not loop.last %}union{% endif %}
+    {% endfor %}
 
 ),
 

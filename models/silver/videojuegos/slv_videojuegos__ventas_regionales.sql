@@ -6,10 +6,14 @@
     unique_key='sale_id'
 ) }}
 
+{% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}
+{% set regiones = ['na', 'eu', 'jp', 'other'] %}
+
 with base_sources as (
---primero se unen todas las fuentes
+{#Se unen las fuentes#}
+    {% for fuente in fuentes %}
     select
-        'VGS_2016' as source_code,
+        '{{ fuente | upper }}' as source_code,
         game_name,
         platform,
         na_sales,
@@ -18,35 +22,9 @@ with base_sources as (
         other_sales,
         global_sales,
         _loaded_at
-    from {{ ref('stg_raw_videojuegos__vgs_2016') }}
-
-    union all
-
-    select
-        'PS4' as source_code,
-        game_name,
-        platform,
-        na_sales,
-        eu_sales,
-        jp_sales,
-        other_sales,
-        global_sales,
-        _loaded_at
-    from {{ ref('stg_raw_videojuegos__ps4') }}
-
-    union all
-
-    select
-        'XBOX' as source_code,
-        game_name,
-        platform,
-        na_sales,
-        eu_sales,
-        jp_sales,
-        other_sales,
-        global_sales,
-        _loaded_at
-    from {{ ref('stg_raw_videojuegos__xbox') }}
+    from {{ ref('stg_raw_videojuegos__' ~ fuente) }}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 
 ),
 
@@ -72,19 +50,17 @@ deduplicated_sources as (
 ),
 
 unpivoted as (
-
-    select source_code, game_name, platform, _loaded_at, 'NA' as region_code, na_sales as sales_millions
+    {% for region in regiones %}
+    select
+        source_code,
+        game_name,
+        platform,
+        _loaded_at,
+        '{{ region | upper }}' as region_code,
+        {{ region }}_sales as sales_millions
     from deduplicated_sources
-    union all
-    select source_code, game_name, platform, _loaded_at, 'EU' as region_code, eu_sales as sales_millions
-    from deduplicated_sources
-    union all
-    select source_code, game_name, platform, _loaded_at, 'JP' as region_code, jp_sales as sales_millions
-    from deduplicated_sources
-    union all
-    select source_code, game_name, platform, _loaded_at, 'OTHER' as region_code, other_sales as sales_millions
-    from deduplicated_sources
-
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
 )
 
 select

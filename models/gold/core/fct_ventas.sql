@@ -12,7 +12,7 @@ with ventas as (
         where edicion_id in (
             select distinct edicion_id
             from {{ ref('slv_videojuegos__ventas_regionales') }}
-            where _loaded_at >= (select dateadd(hour, -1, max(_loaded_at)) from {{ this }})
+            where _loaded_at > (select max(_loaded_at) from {{ this }})
         )
     {% endif %}
 

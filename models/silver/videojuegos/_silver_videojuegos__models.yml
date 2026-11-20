@@ -247,6 +247,9 @@ unit_tests:
           - {game_name: 'The Witcher 3', platform: 'PS4', publisher: 'Namco', release_year: 2015}
       - input: ref('stg_raw_videojuegos__xbox')
         rows: []
+      - input: ref('seed_plataformas')
+        rows:
+          - {platform_code: 'PS4', platform_name: 'PlayStation 4'}
     expect:
       rows:
         - {release_year: 2015, critic_score: 92, user_score: 9.2}

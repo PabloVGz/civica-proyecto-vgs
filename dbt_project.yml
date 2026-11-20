@@ -18,20 +18,36 @@ clean-targets:
 
 models:
   civica_proyecto_vgs:
+    +transient: false
+
     staging:
+      +database: silver_db
       +materialized: view
       raw_videojuegos:
         +schema: raw_videojuegos
+
     silver:
       +database: silver_db
       +materialized: table
       videojuegos:
         +schema: silver_videojuegos
+
     gold:
       +database: gold_db
       intermediate:
-        +materialized: ephemeral
+        +materialized: view
         +schema: intermediate
       core:
         +materialized: table
         +schema: core
+
+seeds:
+  civica_proyecto_vgs:
+    +database: silver_db
+    +schema: seeds
+    seed_plataformas:
+      +column_types:
+        platform_code: varchar(20)
+        platform_name: varchar(100)
+        manufacturer: varchar(50)
+        platform_type: varchar(50)

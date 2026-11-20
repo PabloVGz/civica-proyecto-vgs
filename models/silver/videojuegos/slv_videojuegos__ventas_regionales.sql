@@ -50,12 +50,12 @@ with base_sources as (
 
 ),
 
-filtered_sources as (
+filtered_sources as ( --Aquí pongo el incremental, siendo generoso y poniendo 1h de margen por si hay archivos que hubiesen tardado en cargar.
 
     select *
     from base_sources
     {% if is_incremental() %}
-        where _loaded_at > (select max(_loaded_at) from {{ this }})
+        where _loaded_at >= (select dateadd(hour, -1, max(_loaded_at)) from {{ this }})
     {% endif %}
 
 ),

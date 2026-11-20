@@ -3,8 +3,8 @@ with unioned as (
     select
         game_name,
         platform,
-        publisher,
-        developer,
+        {{ limpiar_nombre_entidad('publisher') }} as publisher, --Limpieza de publishers y developers 
+        {{ limpiar_nombre_entidad('developer') }} as developer,
         rating,
         release_year,
         critic_score,
@@ -19,7 +19,7 @@ with unioned as (
     select
         game_name,
         platform,
-        publisher,
+        {{ limpiar_nombre_entidad('publisher') }} as publisher,
         cast(null as varchar) as developer,
         cast(null as varchar) as rating,
         release_year,
@@ -35,7 +35,7 @@ with unioned as (
     select
         game_name,
         platform,
-        publisher,
+        {{ limpiar_nombre_entidad('publisher') }} as publisher,
         cast(null as varchar) as developer,
         cast(null as varchar) as rating,
         release_year,
@@ -53,9 +53,12 @@ deduplicated as (
     select
         game_name,
         platform,
-        coalesce(publisher, 'Unknown') as publisher_name,
+        coalesce(nullif(publisher, ''), 'Unknown') as publisher_name,
         coalesce(
-            max(developer) over (partition by lower(game_name), lower(platform)),
+            nullif(
+                max(developer) over (partition by lower(game_name), lower(platform)),
+                ''
+            ),
             'Unknown'
         ) as developer_name,
         coalesce(

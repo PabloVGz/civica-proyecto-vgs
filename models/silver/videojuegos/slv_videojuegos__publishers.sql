@@ -11,7 +11,10 @@ with all_publishers as (
 cleaned as (
 
     select distinct
-        coalesce(publisher, 'Unknown') as publisher_name
+        coalesce(
+            nullif({{ limpiar_nombre_entidad('publisher') }}, ''), --limpieza por duplicados con distinto nombre
+            'Unknown'
+        ) as publisher_name
     from all_publishers
 
 )

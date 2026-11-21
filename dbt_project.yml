@@ -24,7 +24,7 @@ models:
     +transient: false
 
     staging:
-      +database: silver_db
+      +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
       +materialized: view
       +tags: ['staging']
       +meta:
@@ -33,7 +33,7 @@ models:
         +schema: raw_videojuegos
 
     silver:
-      +database: silver_db
+      +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
       +materialized: table
       +tags: ['silver']
       +meta:
@@ -42,7 +42,7 @@ models:
         +schema: silver_videojuegos
 
     gold:
-      +database: gold_db
+      +database: "{{ env_var('DBT_GOLD_DB', 'DEV_GOLD_DB') }}"
       +tags: ['gold']
       intermediate:
         +materialized: view
@@ -59,7 +59,7 @@ models:
 
 seeds:
   civica_proyecto_vgs:
-    +database: silver_db
+    +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
     +schema: seeds
     seed_plataformas:
       +column_types:

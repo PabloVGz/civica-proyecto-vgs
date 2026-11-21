@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw_videojuegos
-    database: "{{ env_var('DBT_BRONZE_DATABASE', 'DEV_BRONZE_DB') }}" #Si a env var le metes dos argumentos el segundo actúa como fall back
+    database: "{{ env_var('DBT_BRONZE_DB', 'DEV_BRONZE_DB') }}" #Si a env var le metes dos argumentos el segundo actúa como fall back
     schema: raw_videojuegos
     config:
       loaded_at_field: _loaded_at

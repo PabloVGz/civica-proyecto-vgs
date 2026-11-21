@@ -3,7 +3,8 @@
 {{ config(
     materialized='incremental',
     incremental_strategy='merge',
-    unique_key='sale_id'
+    unique_key='sale_id',
+    on_schema_change='append_new_columns'
 ) }}
 
 {% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}

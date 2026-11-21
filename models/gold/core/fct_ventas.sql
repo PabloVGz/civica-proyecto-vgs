@@ -45,6 +45,10 @@ select
         ),
         2
     ) as cuota_regional_pct,
+    case
+        when v.sales_millions >= {{ var('hit_sales_threshold') }} then true
+        else false
+    end as es_hit,
     v._loaded_at
 from ventas v
 inner join ediciones e

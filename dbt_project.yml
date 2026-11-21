@@ -23,12 +23,16 @@ models:
     staging:
       +database: silver_db
       +materialized: view
+      +meta:
+        owner: "Equipo de Data Engineering"
       raw_videojuegos:
         +schema: raw_videojuegos
 
     silver:
       +database: silver_db
       +materialized: table
+      +meta:
+        owner: "Equipo de Data Engineering"
       videojuegos:
         +schema: silver_videojuegos
 
@@ -37,9 +41,13 @@ models:
       intermediate:
         +materialized: view
         +schema: intermediate
+        +meta:
+          owner: "Equipo de Data Engineering"
       core:
         +materialized: table
         +schema: core
+        +meta:
+          owner: "Equipo de Data Analytics"
 
 seeds:
   civica_proyecto_vgs:

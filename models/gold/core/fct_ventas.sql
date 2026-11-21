@@ -1,6 +1,21 @@
+--Se debe porque si no, gold repetía la lectura del histórico, lo que va justo en contra de lo que quiere hacer un incremental
+{{ config(
+    materialized='incremental',
+    incremental_strategy='merge',
+    unique_key='sale_id',
+    on_schema_change='append_new_columns'
+) }}
+
 with ventas as (
 
     select * from {{ ref('slv_videojuegos__ventas_regionales') }}
+    {% if is_incremental() %}
+        where edicion_id in (
+            select distinct edicion_id
+            from {{ ref('slv_videojuegos__ventas_regionales') }}
+            where _loaded_at > (select max(_loaded_at) from {{ this }})
+        )
+    {% endif %}
 
 ),
 
@@ -29,7 +44,12 @@ select
             0
         ),
         2
-    ) as cuota_regional_pct
+    ) as cuota_regional_pct,
+    case
+        when v.sales_millions >= {{ var('hit_sales_threshold') }} then true
+        else false
+    end as es_hit,
+    v._loaded_at
 from ventas v
 inner join ediciones e
     on v.edicion_id = e.edicion_id

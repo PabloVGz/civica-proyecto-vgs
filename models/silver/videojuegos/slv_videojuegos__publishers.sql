@@ -1,17 +1,22 @@
+{% set fuentes = ['vgs_2016', 'ps4', 'xbox'] %}
+{#Se unen los publishers de los raw usando un bucle#}
+
 with all_publishers as (
---uno los publishers de los raw
-    select publisher from {{ ref('stg_raw_videojuegos__vgs_2016') }}
-    union
-    select publisher from {{ ref('stg_raw_videojuegos__ps4') }}
-    union
-    select publisher from {{ ref('stg_raw_videojuegos__xbox') }}
+
+    {% for fuente in fuentes %}
+    select publisher from {{ ref('stg_raw_videojuegos__' ~ fuente) }}
+    {% if not loop.last %}union{% endif %}
+    {% endfor %}
 
 ),
 
 cleaned as (
 
     select distinct
-        coalesce(publisher, 'Unknown') as publisher_name
+        coalesce(
+            nullif({{ limpiar_nombre_entidad('publisher') }}, ''), --limpieza por duplicados con distinto nombre
+            'Unknown'
+        ) as publisher_name
     from all_publishers
 
 )

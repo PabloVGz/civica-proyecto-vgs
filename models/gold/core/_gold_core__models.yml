@@ -86,7 +86,7 @@ models:
         description: Nombre completo de la región comercial.
 
   - name: fct_ventas
-    description: Tabla de hechos principal de ventas regionales de videojuegos.
+    description: '{{ doc("fct_ventas") }}'
     columns:
       - name: sale_id
         description: '{{ doc("sale_id") }}'
@@ -146,7 +146,7 @@ models:
               config:
                 store_failures: true
       - name: region_id
-        description: Clave foránea hacia dim_regiones.
+        description: Clave foránea hacia dim_regiones (NA, EU, JP, OTHER).
         data_tests:
           - not_null
           - relationships:
@@ -157,7 +157,31 @@ models:
                 store_failures: true
       - name: source_code
         description: '{{ doc("source_code") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['VGS_2016', 'PS4', 'XBOX']
       - name: sales_millions
         description: '{{ doc("sales_millions") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
       - name: cuota_regional_pct
         description: '{{ doc("cuota_regional_pct") }}'
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: es_hit
+        description: "Indicador booleano que señala si las ventas regionales alcanzan o superan el umbral definido en hit_sales_threshold y, por tanto, si ese juego es considerado un hit en dicha región para dicha consola."
+        data_tests:
+          - not_null
+      - name: _loaded_at
+        description: Marca temporal de ingestión en Bronze utilizada como marca de agua para la carga incremental en cadena.
+        data_tests:
+          - not_null

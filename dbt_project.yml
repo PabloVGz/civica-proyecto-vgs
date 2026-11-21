@@ -16,22 +16,54 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  hit_sales_threshold: 1.0
+
 models:
   civica_proyecto_vgs:
+    +transient: false
+
     staging:
+      +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
       +materialized: view
+      +tags: ['staging']
+      +meta:
+        owner: "Equipo de Data Engineering"
       raw_videojuegos:
         +schema: raw_videojuegos
+
     silver:
-      +database: silver_db
+      +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
       +materialized: table
+      +tags: ['silver']
+      +meta:
+        owner: "Equipo de Data Engineering"
       videojuegos:
         +schema: silver_videojuegos
+
     gold:
-      +database: gold_db
+      +database: "{{ env_var('DBT_GOLD_DB', 'DEV_GOLD_DB') }}"
+      +tags: ['gold']
       intermediate:
-        +materialized: ephemeral
+        +materialized: view
         +schema: intermediate
+        +tags: ['intermediate']
+        +meta:
+          owner: "Equipo de Data Engineering"
       core:
         +materialized: table
         +schema: core
+        +tags: ['core']
+        +meta:
+          owner: "Equipo de Data Analytics"
+
+seeds:
+  civica_proyecto_vgs:
+    +database: "{{ env_var('DBT_SILVER_DB', 'DEV_SILVER_DB') }}"
+    +schema: seeds
+    seed_plataformas:
+      +column_types:
+        platform_code: varchar(20)
+        platform_name: varchar(100)
+        manufacturer: varchar(50)
+        platform_type: varchar(50)

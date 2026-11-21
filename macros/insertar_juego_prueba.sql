@@ -2,10 +2,9 @@
 --1. Se ejecuta dbt build --select +slv_videojuegos__ventas_regionales --full-refresh para forzar reconstruccion completa.
 --2. Se ejecuta dbt build --select slv_videojuegos__ventas_regionales  para ver como se actualizan 0 filas.
 --3. Se corre la primera macro dbt run-operation insertar_juego_prueba para insertar el juego.
---4. Se lanza el incremental para ver como se añade solo este sin updatear nada más (dbt build --select +fct_ventas +dim_ediciones +dim_publishers) Aunque falla, si en el pass se va a 
--- slv_videojuegos__ventas_regionales se puede ver [SUCCESS 4 in 3.19s] que son las 4 regiones/filas de Silksong. (el fallo en el comando era porque se actualizan ventas y
---ediciones pero falla relationships por las claves foraneas)
---5. Se borra el dato dbt run-operation borrar_juego_prueba -> dbt build --select +fct_ventas +dim_ediciones +dim_publishers --full-refresh para poder reprobarlo en un futuro.
+--4. Se lanza el incremental para ver como se añade solo este sin updatear nada más (dbt build --selector prueba_incremental) Si en el pass se va a 
+-- slv_videojuegos__ventas_regionales se puede ver [SUCCESS 4 in 3.19s] que son las 4 regiones/filas de Silksong.
+--5. Se borra el dato dbt run-operation borrar_juego_prueba -> dbt build --selector prueba_incremental --full-refresh para poder reprobarlo en un futuro.
 
 
 {% macro insertar_juego_prueba() %}

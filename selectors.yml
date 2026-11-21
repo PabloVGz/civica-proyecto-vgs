@@ -1,0 +1,33 @@
+selectors:
+  - name: capa_silver
+    description: "Todos los modelos de la capa Silver y sus tests."
+    definition:
+      method: tag
+      value: silver
+
+  - name: gold_core
+    description: "Las 7 tablas del modelo dimensional en Gold (hechos y dimensiones)."
+    definition:
+      method: tag
+      value: core
+
+  - name: pipeline_ventas
+    description: "La tabla de hechos fct_ventas y todos sus modelos padres desde Staging y Silver."
+    definition:
+      method: fqn
+      value: fct_ventas
+      parents: true
+      
+  - name: prueba_incremental
+    description: "Construye fct_ventas, dim_ediciones, dim_publishers y todos sus padres para validar cargas incrementales."
+    definition:
+      union:
+        - method: fqn
+          value: fct_ventas
+          parents: true
+        - method: fqn
+          value: dim_ediciones
+          parents: true
+        - method: fqn
+          value: dim_publishers
+          parents: true

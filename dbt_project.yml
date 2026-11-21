@@ -26,6 +26,7 @@ models:
     staging:
       +database: silver_db
       +materialized: view
+      +tags: ['staging']
       +meta:
         owner: "Equipo de Data Engineering"
       raw_videojuegos:
@@ -34,6 +35,7 @@ models:
     silver:
       +database: silver_db
       +materialized: table
+      +tags: ['silver']
       +meta:
         owner: "Equipo de Data Engineering"
       videojuegos:
@@ -41,14 +43,17 @@ models:
 
     gold:
       +database: gold_db
+      +tags: ['gold']
       intermediate:
         +materialized: view
         +schema: intermediate
+        +tags: ['intermediate']
         +meta:
           owner: "Equipo de Data Engineering"
       core:
         +materialized: table
         +schema: core
+        +tags: ['core']
         +meta:
           owner: "Equipo de Data Analytics"
 

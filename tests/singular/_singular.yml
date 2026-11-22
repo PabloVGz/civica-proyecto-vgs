@@ -1,5 +1,5 @@
 data_tests:
-- name: assert_ediciones con ventas
+- name: assert_ediciones_con_ventas
   description: Edición sin registro de ventas
   config:
     severity: warn

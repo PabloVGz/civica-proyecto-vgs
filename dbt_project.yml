@@ -19,6 +19,7 @@ clean-targets:
 vars:
   hit_sales_threshold: 1.0
 
+
 models:
   civica_proyecto_vgs:
     +transient: false

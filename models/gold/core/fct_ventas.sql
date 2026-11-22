@@ -33,12 +33,11 @@ select
     e.publisher_id,
     e.developer_id,
     v.region_id,
-    v.source_code,
     v.sales_millions,
     round(
         coalesce(
             v.sales_millions / nullif(
-                sum(v.sales_millions) over (partition by v.edicion_id, v.source_code),
+                sum(v.sales_millions) over (partition by v.edicion_id),
                 0
             ) * 100,
             0

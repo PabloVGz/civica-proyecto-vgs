@@ -83,6 +83,5 @@ Tabla de hechos central con las ventas regionales de videojuegos en millones de 
 
 ### Estrategia incremental en cadena
 * **Materialización:** `incremental` con estrategia `merge` sobre `sale_id`, cerrando la cadena incremental desde `slv_videojuegos__ventas_regionales` hasta Gold sin reescribir el histórico completo.
-* **Ventana de 1 hora:** Filtra los registros con `_loaded_at >= dateadd(hour, -1, max(_loaded_at))` para absorber cargas más lentas entre fuentes sin generar duplicados.
 * **Consistencia de ventana:** Ante cualquier actualización, se reprocesan las 4 regiones completas de las `edicion_id` afectadas para garantizar que `cuota_regional_pct` sume siempre el `100 %`.
 {% enddocs %}

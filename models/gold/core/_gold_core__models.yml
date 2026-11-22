@@ -155,13 +155,6 @@ models:
                 field: region_id
               config:
                 store_failures: true
-      - name: source_code
-        description: '{{ doc("source_code") }}'
-        data_tests:
-          - not_null
-          - accepted_values:
-              arguments:
-                values: ['VGS_2016', 'PS4', 'XBOX']
       - name: sales_millions
         description: '{{ doc("sales_millions") }}'
         data_tests:

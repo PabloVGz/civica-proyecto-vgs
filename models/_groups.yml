@@ -1,0 +1,5 @@
+groups:
+  - name: gaming_analytics
+    owner:
+      name: Equipo de Data y Analytics
+      email: equipo-ejemplo@civica.es

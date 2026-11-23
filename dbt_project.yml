@@ -61,6 +61,8 @@ models:
         +tags: ['core']
         +meta:
           owner: "Equipo de Data Analytics"
+        +grants:
+          select: ['REPORTING_ROLE']
 
 seeds:
   civica_proyecto_vgs:

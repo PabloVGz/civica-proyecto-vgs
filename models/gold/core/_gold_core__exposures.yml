@@ -1,0 +1,23 @@
+version: 2
+
+exposures:
+  - name: cuadro_mando_videojuegos
+    label: Control analítico de las ventas
+    type: dashboard
+    maturity: medium
+    description: >
+      Explotación analítica sobre el esquema en estrella de Gold Core para
+      responder los casos de uso de negocio: ventas por región y cuota regional,
+      rendimiento por plataforma/fabricante, impacto de lanzamientos multiplataforma
+      y correlación entre notas de Metacritic y éxito comercial (es_hit).
+    depends_on:
+      - ref('fct_ventas')
+      - ref('dim_ediciones')
+      - ref('dim_plataformas')
+      - ref('dim_generos')
+      - ref('dim_publishers')
+      - ref('dim_developers')
+      - ref('dim_regiones')
+    owner:
+      name: Equipo de Data y Analytics
+      email: equipo-ejemplo@civica.es

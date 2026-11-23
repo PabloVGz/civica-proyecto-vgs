@@ -4,7 +4,7 @@
 {%- if custom_schema_name is none -%}
 {{ default_schema }}
 {%- elif invocation_context != 'ci'
-and target.name in ['dev', 'pre', 'pro'] -%}
+and target.name in ['dev', 'pro'] -%}
 {{ custom_schema_name | trim }}
 {%- else -%}
 {{ default_schema }}_{{ custom_schema_name | trim }}

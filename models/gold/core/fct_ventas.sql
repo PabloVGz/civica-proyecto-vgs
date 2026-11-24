@@ -3,7 +3,7 @@
     materialized='incremental',
     incremental_strategy='merge',
     unique_key='sale_id',
-    on_schema_change='append_new_columns'
+    on_schema_change='fail'
 ) }}
 
 with ventas as (
@@ -33,16 +33,18 @@ select
     e.publisher_id,
     e.developer_id,
     v.region_id,
-    v.sales_millions,
-    round(
-        coalesce(
-            v.sales_millions / nullif(
-                sum(v.sales_millions) over (partition by v.edicion_id),
+    cast(v.sales_millions as float) as sales_millions,
+    cast(
+        round(
+            coalesce(
+                v.sales_millions / nullif(
+                    sum(v.sales_millions) over (partition by v.edicion_id),
+                    0
+                ) * 100,
                 0
-            ) * 100,
-            0
-        ),
-        2
+            ),
+            2
+        ) as float
     ) as cuota_regional_pct,
     case
         when v.sales_millions >= {{ var('hit_sales_threshold') }} then true

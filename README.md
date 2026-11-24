@@ -1,4 +1,4 @@
-# PROYECTO: Análisis de Ventas de Videojuegos
+# PROYECTO: Análisis de ventas de videojuegos
 
 Proyecto final del curso de **Data Engineering de Cívica**. Implementa un pipeline con **dbt** y **Snowflake**, transformando tres fuentes históricas de ventas de videojuegos.
 
@@ -55,12 +55,14 @@ Los datos se han organizado de la siguiente manera:
 
 ## Calidad y Automatización
 
-* **Calidad de Datos (`tests/` y YAML):**
+* **Calidad de datos (`tests/` y YAML):**
   * Pruebas genéricas de unicidad, no nulidad, valores aceptados (`accepted_values`), rangos numéricos (`dbt_utils.accepted_range`) e integridad referencial (`relationships` con `store_failures: true` hacia las 6 dimensiones).
   * Tests singulares (`assert_ediciones_con_ventas`) y *unit tests* en Silver para validar la lógica de transformación en memoria.
 * **Macros (`macros/`):**
   * `limpiar_nombre_entidad`: Estandarización de nombres de *publishers* y *developers*.
   * `generate_schema_name`: Resolución limpia de esquemas por entorno (`dev`, `pre`, `pro`) con salvaguarda para ejecuciones de CI.
   * `insertar_juego_prueba` / `borrar_juego_prueba`: Operaciones auxiliares para validar flujos incrementales .
+* **Gobierno y control de acceso:**
+  - Definición del dominio `gaming_analytics` en `models/_groups.yml` con responsable asignado y configuración de niveles de visibilidad en `dbt_project.yml`: `access: private` para la vista puente `gold/intermediate` y `access: public` para las 7 tablas finales de `gold/core`.
 
 

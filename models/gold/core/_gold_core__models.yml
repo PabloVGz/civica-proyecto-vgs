@@ -3,100 +3,220 @@ version: 2
 models:
   - name: dim_ediciones
     description: Dimensión de ediciones de videojuegos con año, década, clasificación ESRB, disponibilidad multiplataforma y notas de Metacritic.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: edicion_id
+        data_type: varchar
         description: '{{ doc("edicion_id") }}'
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: game_name
+        data_type: varchar
         description: Título comercial normalizado del videojuego.
+        constraints:
+          - type: not_null
+
       - name: release_year
+        data_type: integer
         description: Año de lanzamiento comercial de la edición.
+
       - name: decada_lanzamiento
+        data_type: varchar
         description: '{{ doc("decada_lanzamiento") }}'
+        constraints:
+          - type: not_null
+
       - name: rating_code
+        data_type: varchar
         description: '{{ doc("rating_code") }}'
+        constraints:
+          - type: not_null
+
       - name: rating_description
+        data_type: varchar
         description: Descripción completa del rango de edad correspondiente al código ESRB.
+        constraints:
+          - type: not_null
+
       - name: es_multiplataforma
+        data_type: boolean
         description: '{{ doc("es_multiplataforma") }}'
+        constraints:
+          - type: not_null
+
       - name: total_plataformas
+        data_type: integer
         description: '{{ doc("total_plataformas") }}'
+        constraints:
+          - type: not_null
+
       - name: critic_score
+        data_type: integer
         description: '{{ doc("critic_score") }}'
+
       - name: critic_count
+        data_type: integer
         description: Número total de reseñas de crítica especializada contabilizadas.
+
       - name: user_score
+        data_type: integer
         description: '{{ doc("user_score") }}'
+
       - name: user_count
+        data_type: integer
         description: Número total de valoraciones de usuarios contabilizadas.
 
   - name: dim_plataformas
     description: Dimensión analítica de consolas y sistemas de juego con fabricante y tipo de hardware.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: platform_id
+        data_type: varchar
         description: Clave de la plataforma.
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: platform_code
+        data_type: varchar
         description: Código abreviado de la plataforma (ej. PS4, XOne, PC, Wii).
+        constraints:
+          - type: not_null
+
       - name: platform_name
+        data_type: varchar
         description: Nombre comercial completo de la plataforma.
+        constraints:
+          - type: not_null
+
       - name: manufacturer
+        data_type: varchar
         description: Fabricante del hardware (Sony, Microsoft, Nintendo, PC, etc.).
+        constraints:
+          - type: not_null
+
       - name: platform_type
+        data_type: varchar
         description: '{{ doc("platform_type") }}'
+        constraints:
+          - type: not_null
 
   - name: dim_generos
     description: Dimensión analítica de géneros de videojuegos con su agrupación de macrogénero.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: genre_id
+        data_type: varchar
         description: Clave del género.
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: genre_name
+        data_type: varchar
         description: Nombre limpio del género del videojuego.
+        constraints:
+          - type: not_null
+
       - name: macrogenre_name
+        data_type: varchar
         description: Agrupación de alto nivel del género.
+        constraints:
+          - type: not_null
 
   - name: dim_publishers
     description: Dimensión compañías editoras responsables de la distribución comercial.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: publisher_id
+        data_type: varchar
         description: Clave del publisher.
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: publisher_name
+        data_type: varchar
         description: Nombre estandarizado de la compañía editora.
+        constraints:
+          - type: not_null
 
   - name: dim_developers
     description: Dimensión de estudios desarrolladores de videojuegos.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: developer_id
+        data_type: varchar
         description: Clave del estudio desarrollador.
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: developer_name
+        data_type: varchar
         description: Nombre del estudio creador del juego.
+        constraints:
+          - type: not_null
 
   - name: dim_regiones
     description: Dimensión de regiones geográficas donde se registran las ventas.
+    config:
+      contract:
+        enforced: true
     columns:
       - name: region_id
+        data_type: varchar
         description: Clave de la región.
+        constraints:
+          - type: not_null
         data_tests: [unique, not_null]
+
       - name: region_code
+        data_type: varchar
         description: '{{ doc("region_code") }}'
+        constraints:
+          - type: not_null
+
       - name: region_name
+        data_type: varchar
         description: Nombre completo de la región comercial.
+        constraints:
+          - type: not_null
 
   - name: fct_ventas
     description: '{{ doc("fct_ventas") }}'
+    config:
+      contract:
+        enforced: true
     columns:
       - name: sale_id
+        data_type: varchar
         description: '{{ doc("sale_id") }}'
+        constraints:
+          - type: not_null
         data_tests:
           - unique:
               config:
                 store_failures: true
           - not_null
+
       - name: edicion_id
+        data_type: varchar
         description: '{{ doc("edicion_id") }}'
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -105,8 +225,12 @@ models:
                 field: edicion_id
               config:
                 store_failures: true
+
       - name: platform_id
+        data_type: varchar
         description: Clave foránea hacia dim_plataformas.
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -115,8 +239,12 @@ models:
                 field: platform_id
               config:
                 store_failures: true
+
       - name: genre_id
+        data_type: varchar
         description: Clave foránea hacia dim_generos.
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -125,8 +253,12 @@ models:
                 field: genre_id
               config:
                 store_failures: true
+
       - name: publisher_id
+        data_type: varchar
         description: Clave foránea hacia dim_publishers.
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -135,8 +267,12 @@ models:
                 field: publisher_id
               config:
                 store_failures: true
+
       - name: developer_id
+        data_type: varchar
         description: Clave foránea hacia dim_developers.
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -145,8 +281,12 @@ models:
                 field: developer_id
               config:
                 store_failures: true
+
       - name: region_id
+        data_type: varchar
         description: Clave foránea hacia dim_regiones (NA, EU, JP, OTHER).
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
@@ -155,26 +295,42 @@ models:
                 field: region_id
               config:
                 store_failures: true
+
       - name: sales_millions
+        data_type: float
         description: '{{ doc("sales_millions") }}'
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
+
       - name: cuota_regional_pct
+        data_type: float
         description: '{{ doc("cuota_regional_pct") }}'
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
                 max_value: 100
+
       - name: es_hit
+        data_type: boolean
         description: "Indicador booleano que señala si las ventas regionales alcanzan o superan el umbral definido en hit_sales_threshold y, por tanto, si ese juego es considerado un hit en dicha región para dicha consola."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
+
       - name: _loaded_at
+        data_type: timestamp_ltz
         description: Marca temporal de ingestión en Bronze utilizada como marca de agua para la carga incremental en cadena.
+        constraints:
+          - type: not_null
         data_tests:
           - not_null

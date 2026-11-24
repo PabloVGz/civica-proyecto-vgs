@@ -10,7 +10,7 @@ renamed as (
     -- Los trim son para quitar los espacios y tal, todo más homogeneo así. Aparte de eso pues se quitan nulos (Not Applicable es realmente nulo) y se convierten en números los que deben serlo.
         {{ limpiar_nombre_juego('name') }}::varchar as game_name,
         trim(platform)::varchar as platform,
-        case --Hay un único juego cuya fecha de lanzamiento no cuadra
+        case --Hay un único juego cuya fecha de lanzamiento no cuadra: PRISCIPERMISO
             when lower(trim(name)) = 'imagine: makeup artist'
                  and lower(trim(platform)) = 'ds'
                  and try_to_number(year_of_release)::integer = 2020

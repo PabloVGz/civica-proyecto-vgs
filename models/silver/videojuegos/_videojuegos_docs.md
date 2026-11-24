@@ -56,7 +56,7 @@ Puntuación media otorgada por la prensa especializada en Metacritic (escala ent
 {% enddocs %}
 
 {% docs user_score %}
-Puntuación media otorgada por los usuarios en Metacritic (escala decimal de **0.0 a 10.0**).
+Puntuación media otorgada por los usuarios en Metacritic (escala decimal de **0 a 100**).
 {% enddocs %}
 
 {% docs decada_lanzamiento %}

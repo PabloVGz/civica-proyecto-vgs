@@ -82,6 +82,6 @@ select
     release_year,
     critic_score,
     critic_count,
-    user_score,
+    round(user_score * 10)::integer as user_score,
     user_count
 from deduplicated

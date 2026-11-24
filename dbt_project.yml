@@ -48,15 +48,21 @@ models:
       intermediate:
         +materialized: view
         +schema: intermediate
+        +group: gaming_analytics
+        +access: private
         +tags: ['intermediate']
         +meta:
           owner: "Equipo de Data Engineering"
       core:
         +materialized: table
         +schema: core
+        +group: gaming_analytics
+        +access: public
         +tags: ['core']
         +meta:
           owner: "Equipo de Data Analytics"
+        +grants:
+          select: ['REPORTING_ROLE']
 
 seeds:
   civica_proyecto_vgs:

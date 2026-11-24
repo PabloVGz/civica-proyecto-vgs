@@ -63,7 +63,7 @@ models:
         description: Número total de reseñas de crítica especializada contabilizadas.
 
       - name: user_score
-        data_type: number(10, 2)
+        data_type: integer
         description: '{{ doc("user_score") }}'
 
       - name: user_count

@@ -177,7 +177,7 @@ models:
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
-                max_value: 10
+                max_value: 100
                 inclusive: true
       - name: critic_count
         description: Número total de reseñas de crítica especializada contabilizadas.
@@ -252,7 +252,7 @@ unit_tests:
           - {platform_code: 'PS4', platform_name: 'PlayStation 4'}
     expect:
       rows:
-        - {release_year: 2015, critic_score: 92, user_score: 9.2}
+        - {release_year: 2015, critic_score: 92, user_score: 92}
 
   - name: test_slv_ratings_mapea_descripciones #Se comprueba que al meter dos ratings se le de bien el codigo y la descripción
     model: slv_videojuegos__ratings

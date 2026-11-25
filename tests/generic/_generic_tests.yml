@@ -1,0 +1,26 @@
+version: 2
+
+macros:
+  - name: test_min_value
+    description: >
+      Test genérico reutilizable que verifica que todos los valores no nulos de una
+      columna numérica sean mayores o iguales al umbral mínimo especificado (`value`).
+      Devuelve los registros que incumplen la condición.
+    arguments:
+      - name: model
+        description: Modelo o fuente sobre el que se ejecuta la validación.
+      - name: column_name
+        description: Nombre de la columna numérica a evaluar.
+      - name: value
+        description: Valor mínimo permitido para la columna (por defecto `0`).
+
+  - name: test_not_future_timestamp
+    description: >
+      Test genérico de calidad temporal que comprueba que las marcas de tiempo de una
+      columna (como `_loaded_at`) no sean posteriores al instante actual de ejecución
+      (`current_timestamp()`), evitando anomalías de ingestión con fechas futuras.
+    arguments:
+      - name: model
+        description: Modelo o fuente sobre el que se ejecuta la validación.
+      - name: column_name
+        description: Nombre de la columna de tipo fecha o timestamp a validar.

@@ -1,0 +1,45 @@
+version: 2
+
+macros:
+  - name: generate_schema_name
+    description: >
+      Sobrescribe la resolución por defecto de esquemas de dbt para aislar entornos.
+      Cuando `target.name` es `dev` o `pro`, utiliza exactamente el nombre limpio del
+      esquema configurado en `dbt_project.yml` (por ejemplo, `CORE` o `SILVER_VIDEOJUEGOS`). Override de Cívica.
+    arguments:
+      - name: custom_schema_name
+        description: Nombre de esquema personalizado definido en `dbt_project.yml` o en la configuración del nodo.
+      - name: node
+        description: Objeto interno de dbt que representa el modelo, seed o snapshot que se está compilando.
+
+  - name: limpiar_nombre_entidad
+    description: >
+      Macro de estandarización aplicada en Staging sobre nombres de *publishers* y *developers*.
+      Elimina caracteres de control y codificación corrupta (`[\x00-\x1F\x7F-\xFF]`), recorta
+      espacios sobrantes y unifica variantes conocidas de compañías.
+    arguments:
+      - name: columna
+        description: Nombre o expresión SQL de la columna de texto que contiene la entidad a normalizar.
+
+  - name: limpiar_nombre_juego
+    description: >
+      Macro de normalización aplicada en Staging sobre títulos de videojuegos (`game_name`).
+      Sanea caracteres corruptos de codificación (como `Ê`, espacios de no separación `chr(160)` y
+      `chr(142)` $\rightarrow$ `é`) y unifica diferencias de puntuación entre fuentes históricas y
+      de consola para garantizar que `game_id` y `edicion_id` generen el mismo hash en Silver.
+    arguments:
+      - name: columna
+        description: Nombre o expresión SQL de la columna que contiene el título original del videojuego.
+
+  - name: insertar_juego_prueba
+    description: >
+      Operación administrativa (`dbt run-operation`) que ejecuta una sentencia `INSERT` mediante
+      `run_query` sobre `DEV_BRONZE_DB.RAW_VIDEOJUEGOS.RAW_PS4` para simular la llegada de un
+      lanzamiento nuevo (*Hollow Knight: Silksong*, 2025, 5,50M globales) con `_loaded_at = current_timestamp()`
+      y validar el flujo incremental extremo a extremo.
+
+  - name: borrar_juego_prueba
+    description: >
+      Operación administrativa de limpieza (`dbt run-operation`) que ejecuta una sentencia `DELETE`
+      mediante `run_query` sobre `DEV_BRONZE_DB.RAW_VIDEOJUEGOS.RAW_PS4` para eliminar el registro
+      de prueba de *Hollow Knight: Silksong* tras demostrar la carga incremental.

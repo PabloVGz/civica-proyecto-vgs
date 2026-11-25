@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: gold_ediciones__enriched
+    description: >
+      Vista intermedia de la capa Gold que consolida en un único punto los atributos
+      y las métricas derivadas de cada edición de videojuego (cruces con videojuegos
+      y clasificaciones ESRB, cálculo de década de lanzamiento y detección de títulos
+      multiplataforma) para abastecer tanto a `dim_ediciones` como a `fct_ventas` sin repetir
+      lógica ni JOINs.
+    columns:
+      - name: edicion_id
+        description: '{{ doc("edicion_id") }}'
+
+      - name: game_id
+        description: Clave del videojuego.
+
+      - name: platform_id
+        description: Clave de la plataforma.
+
+      - name: genre_id
+        description: Clave del género principal.
+
+      - name: publisher_id
+        description: Clave de la compañía editora (*publisher*).
+
+      - name: developer_id
+        description: Clave del estudio desarrollador (*developer*).
+
+      - name: rating_id
+        description: Clave de la clasificación por edades ESRB.
+
+      - name: game_name
+        description: Título comercial del videojuego.
+
+      - name: release_year
+        description: Año de lanzamiento comercial de la edición (`NULL` si no consta en las fuentes).
+
+      - name: decada_lanzamiento
+        description: '{{ doc("decada_lanzamiento") }}'
+
+      - name: rating_code
+        description: '{{ doc("rating_code") }}'
+
+      - name: rating_description
+        description: Descripción completa de la clasificación por edades ESRB (`Unrated / Not Specified` si no consta).
+
+      - name: es_multiplataforma
+        description: '{{ doc("es_multiplataforma") }}'
+
+      - name: total_plataformas
+        description: '{{ doc("total_plataformas") }}'
+
+      - name: critic_score
+        description: '{{ doc("critic_score") }}'
+
+      - name: critic_count
+        description: Número de reseñas de crítica especializada contabilizadas en Metacritic.
+
+      - name: user_score
+        description: '{{ doc("user_score") }}'
+
+      - name: user_count
+        description: Número de valoraciones de usuarios contabilizadas en Metacritic.
